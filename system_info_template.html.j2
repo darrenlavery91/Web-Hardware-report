@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-image: url(/img/4562472.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1, h2, p, pre {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: white;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: darkblue;
+            color: white;
+        }
+
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            display: block;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: blue;
+            border: 1px solid darkblue;
+            border-radius: 5px;
+            background-color: darkblue;
+            color: white;
+            cursor: pointer;
+        }
+
+        .navbar a:hover {
+            background-color: blue;
+        }
+
+        label {
+            display: inline-block;
+            width: 150px;
+            margin-right: 10px;
+        }
+
+        select, input {
+            width: 100px;
+            margin-bottom: 10px;
+            color: blue;
+            border: 1px solid darkblue;
+        }
+
+        button {
+            width: 150px;
+            margin-top: 10px;
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkblue;
+        }
+
+        audio, video {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: blue;
+            border: 0px solid darkblue;
+        }
+    </style>
+    <title>System Information Report</title>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ system_info.stdout | default('N/A') }} Information Report</h1>
+
+        <h2>Hostname</h2>
+        <p>{{ system_info.stdout | default('N/A') }}</p>
+
+        <h2>IP Address</h2>
+        <pre>{{ network_info.stdout | default('N/A') }}</pre>
+        
+        <h2>Disk Usage</h2>
+<table>
+    <tr>
+        <th>Partition</th>
+        <th>Size</th>
+        <th>Used</th>
+        <th>Available</th>
+        <th>Percentage Used</th>
+        <th>Mount Point</th>
+    </tr>
+    {% for line in disk_info.stdout_lines %}
+        <tr>
+            <td>{{ line }}</td>  {# Add this line to display the entire line for debugging purposes #}
+            {% if line|length > 0 %}
+                {% set fields = line.split() %}
+                <tr>
+                    <td>{{ fields[0] }}</td>
+                    <td>{{ fields[1] }}</td>
+                    <td>{{ fields[2] }}</td>
+                    <td>{{ fields[3] }}</td>
+                    <td>{{ fields[4] }}</td>
+                    <td>{{ fields[5] }}</td>
+                </tr>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>
+ 
+        <h2>Uptime</h2>
+        <pre>{{ uptime_info.stdout | default('N/A') }}</pre>
+
+        <h2>Memory Usage</h2>
+        <pre>{{ memory_info.stdout | default('N/A') }}</pre>
+
+        <h2>Kernel Number and OS Release</h2>
+        <p>Kernel: {{ kernel_info.stdout | default('N/A') }}</p>
+        <p>OS: {{ os_info.stdout | default('N/A')}}</p>
+    
+        <h2>Users and Privileges</h2>
+        <label for="users-privileges">Select User:</label>
+        <select id="users-privileges">
+            {% for user in users_info.stdout_lines | default([]) %}
+                 <option value="{{ user }}">{{ user }}</option>
+            {% endfor %}
+
+        </select>
+    </div>
+</body>
+</html>
