@@ -2,6 +2,39 @@
 
 This Ansible playbook is designed to gather system information from remote hosts and create an HTML report. The report includes details such as user information, hostname, IP address, disk usage, uptime, memory usage, kernel information, and more.
 
+## Prerequisites
+
+Before running this playbook, ensure the following prerequisites are met on the control machine and target hosts:
+
+1. **Ansible Installed:**
+   - Ensure Ansible is installed on your control machine. If not, you can install it using:
+
+     ```bash
+     sudo apt-get install ansible   # For Debian/Ubuntu
+     sudo yum install ansible       # For RHEL/CentOS
+     ```
+
+2. **HTTP Server (httpd) Installed:**
+   - Make sure the Apache HTTP server (`httpd`) is installed on the target host where the HTML reports will be hosted. Install it using:
+
+     ```bash
+     sudo systemctl status httpd
+     ```
+
+3. **Web Directory Created:**
+   - Create the web directory `/var/www/html` on your ansible host. You can use the following Ansible command:
+
+     ```bash
+     sudo mkdir -p /var/www/html
+     ```
+
+4. **HTTP Server Running:**
+   - Ensure the HTTP server (`httpd`) is running on the target host. You can start or restart the service using:
+
+     ```bash
+     sudo ansible -m service -a "name=httpd state=started" -i inventory_file localhost
+     ```
+
 ## Usage
 
 1. Ensure Ansible is installed on your control machine.
