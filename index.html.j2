@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-image: url(/yourimage.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1, h2, p, pre {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: white;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: darkblue;
+            color: white;
+        }
+
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            display: block;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: blue;
+            border: 1px solid darkblue;
+            border-radius: 5px;
+            background-color: darkblue;
+            color: white;
+            cursor: pointer;
+        }
+
+        .navbar a:hover {
+            background-color: blue;
+        }
+
+        label {
+            display: inline-block;
+            width: 150px;
+            margin-right: 10px;
+        }
+
+        select, input {
+            width: 100px;
+            margin-bottom: 10px;
+            color: blue;
+            border: 1px solid darkblue;
+        }
+
+        button {
+            width: 150px;
+            margin-top: 10px;
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkblue;
+        }
+
+        audio, video {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: blue;
+            border: 0px solid darkblue;
+        }
+    </style>
+    <title>System Information Report</title>
+</head>
+<body>
+    <div class="container">
+        <h1>System Information Index</h1>
+
+        <ul>
+            {% for host in ansible_play_batch %}
+                <li><a href="/system_info_{{ host }}.html">{{ host }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
