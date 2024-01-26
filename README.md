@@ -61,7 +61,7 @@ ansible-playbook -i inventory_file Web-Hardware-report.yml
       register: system_info
 
     - name: Gather IP Address
-      shell: ip a | grep "10.10."
+      shell: ip a | grep "X.X."
       register: network_info
 
     - name: Gather Disk Usage
