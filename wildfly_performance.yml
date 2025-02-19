@@ -1,0 +1,62 @@
+---
+- name: Investigate WildFly Performance
+  hosts: wildfly_servers
+  become: yes
+  vars:
+    wildfly_home: "/opt/wildfly"
+    wildfly_user: "wildfly"
+    jboss_cli: "{{ wildfly_home }}/bin/jboss-cli.sh"
+    jvm_heap_threshold: 80
+    log_file: "{{ wildfly_home }}/standalone/log/server.log"
+
+  tasks:
+
+    - name: Check CPU and Memory Usage
+      shell: |
+        echo "CPU Usage:" && top -b -n1 | grep "Cpu(s)"
+        echo "Memory Usage:" && free -h
+      register: sys_usage
+
+    - name: Display System Performance
+      debug:
+        msg: "{{ sys_usage.stdout_lines }}"
+
+    - name: Check Disk Usage
+      shell: df -h
+      register: disk_usage
+
+    - name: Display Disk Usage
+      debug:
+        msg: "{{ disk_usage.stdout_lines }}"
+
+    - name: Get JVM Heap Usage
+      shell: "{{ jboss_cli }} --connect --command='/core-service=platform-mbean/type=memory:read-resource(recursive=true)'"
+      register: jvm_memory
+
+    - name: Display JVM Heap Usage
+      debug:
+        msg: "{{ jvm_memory.stdout_lines }}"
+
+    - name: Get Active WildFly Threads
+      shell: "{{ jboss_cli }} --connect --command='/core-service=platform-mbean/type=threading:read-resource(recursive=true)'"
+      register: wildfly_threads
+
+    - name: Display WildFly Threads
+      debug:
+        msg: "{{ wildfly_threads.stdout_lines }}"
+
+    - name: Check Active Sessions in WildFly
+      shell: "{{ jboss_cli }} --connect --command='/subsystem=undertow/server=default-server/host=default-host:read-attribute(name=active-sessions)'"
+      register: active_sessions
+
+    - name: Display Active Sessions
+      debug:
+        msg: "{{ active_sessions.stdout_lines }}"
+
+    - name: Get Recent WildFly Logs
+      shell: "tail -n 50 {{ log_file }}"
+      register: logs
+
+    - name: Display Recent Logs
+      debug:
+        msg: "{{ logs.stdout_lines }}"
